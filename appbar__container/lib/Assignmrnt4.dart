@@ -7,7 +7,7 @@ class Assignmrnt4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Hello Core2Web"),
@@ -23,7 +23,7 @@ class Assignmrnt4 extends StatelessWidget {
               width: 100,
               height: 100,
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Container(
