@@ -10,26 +10,20 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: quizApp(),
+      home: QuizApp(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class quizApp extends StatefulWidget {
-  const quizApp({super.key});
+class QuizApp extends StatefulWidget {
+  const QuizApp({super.key});
 
   @override
-  State<quizApp> createState() => _quizAppState();
+  State<QuizApp> createState() => _QuizAppState();
 }
 
-class _quizAppState extends State<quizApp> {
-  int score = 0;
-  int queIndex = 0;
-  int btn1 = -1;
-  int btn2 = -1;
-  int btn3 = -1;
-  int btn4 = -1;
-
+class _QuizAppState extends State<QuizApp> {
   List<Map> allQuestions = [
     {
       "Question": "Who is the Founder of Microsoft",
@@ -54,6 +48,28 @@ class _quizAppState extends State<quizApp> {
   ];
 
   bool screen = true;
+  int score = 0;
+  int queIndex = 0;
+  int selectedIndex = -1;
+  bool answerSelected = false;
+
+  //function to check if selected answer is true or false and turn the button color
+  MaterialStateProperty<Color?>? checkAns(int currQueIndex) {
+    if (selectedIndex != -1) {
+      if (allQuestions[queIndex]["ans"] == currQueIndex) {
+        return const MaterialStatePropertyAll(Colors.green);
+      } else {
+        if (selectedIndex == currQueIndex) {
+          setState(() {
+            score++;
+          });
+          return const MaterialStatePropertyAll(Colors.red);
+        }
+      }
+    }
+    return const MaterialStatePropertyAll(null);
+  }
+
   Scaffold quiz() {
     if (screen) {
       return Scaffold(
@@ -71,6 +87,9 @@ class _quizAppState extends State<quizApp> {
         ),
         body: Column(
           children: [
+            const SizedBox(
+              height: 100,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -83,40 +102,31 @@ class _quizAppState extends State<quizApp> {
                 ),
                 Text(
                   "${queIndex + 1} / ${allQuestions.length}",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
             SizedBox(
               height: 50,
               child: Text("Question : ${allQuestions[queIndex]["Question"]}",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w600)),
             ),
             const SizedBox(
               height: 50,
             ),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  btn1 = 0;
-                  if (allQuestions[queIndex]["ans"] == 1) {
-                    btn2 = 1;
-                  } else if (allQuestions[queIndex]["ans"] == 2) {
-                    btn3 = 2;
-                  } else if (allQuestions[queIndex]["ans"] == 3) {
-                    btn4 = 3;
-                  } else {
-                    score++;
-                  }
-                });
-              },
               style: ButtonStyle(
-                backgroundColor: (allQuestions[queIndex]["ans"] == btn1)
-                    ? MaterialStatePropertyAll(Colors.green)
-                    : (btn1 == 0)
-                        ? MaterialStatePropertyAll(Colors.red)
-                        : null,
+                backgroundColor: checkAns(0),
               ),
+              onPressed: () {
+                if (selectedIndex == -1) {
+                  setState(() {
+                    selectedIndex = 0;
+                  });
+                }
+              },
               child: Text(
                 "A. ${allQuestions[queIndex]["Option"][0]}",
                 style: const TextStyle(
@@ -129,30 +139,19 @@ class _quizAppState extends State<quizApp> {
               height: 30,
             ),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  btn2 = 1;
-                  if (allQuestions[queIndex]["ans"] == 0) {
-                    btn1 = 0;
-                  } else if (allQuestions[queIndex]["ans"] == 2) {
-                    btn3 = 2;
-                  } else if (allQuestions[queIndex]["ans"] == 3) {
-                    btn4 = 3;
-                  } else {
-                    score++;
-                  }
-                });
-              },
               style: ButtonStyle(
-                backgroundColor: (allQuestions[queIndex]["ans"] == btn2)
-                    ? MaterialStatePropertyAll(Colors.green)
-                    : (btn2 == 1)
-                        ? MaterialStatePropertyAll(Colors.red)
-                        : null,
+                backgroundColor: checkAns(1),
               ),
+              onPressed: () {
+                if (selectedIndex == -1) {
+                  setState(() {
+                    selectedIndex = 1;
+                  });
+                }
+              },
               child: Text(
-                "B. ${allQuestions[queIndex]["Option"][1]}",
-                style: TextStyle(
+                "A. ${allQuestions[queIndex]["Option"][1]}",
+                style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: Colors.black),
@@ -162,30 +161,19 @@ class _quizAppState extends State<quizApp> {
               height: 30,
             ),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  btn3 = 2;
-                  if (allQuestions[queIndex]["ans"] == 0) {
-                    btn1 = 0;
-                  } else if (allQuestions[queIndex]["ans"] == 1) {
-                    btn2 = 1;
-                  } else if (allQuestions[queIndex]["ans"] == 3) {
-                    btn4 = 3;
-                  } else {
-                    score++;
-                  }
-                });
-              },
               style: ButtonStyle(
-                backgroundColor: (allQuestions[queIndex]["ans"] == btn3)
-                    ? MaterialStatePropertyAll(Colors.green)
-                    : (btn3 == 2)
-                        ? MaterialStatePropertyAll(Colors.red)
-                        : null,
+                backgroundColor: checkAns(2),
               ),
+              onPressed: () {
+                if (selectedIndex == -1) {
+                  setState(() {
+                    selectedIndex = 2;
+                  });
+                }
+              },
               child: Text(
-                "C. ${allQuestions[queIndex]["Option"][2]}",
-                style: TextStyle(
+                "A. ${allQuestions[queIndex]["Option"][2]}",
+                style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: Colors.black),
@@ -195,30 +183,19 @@ class _quizAppState extends State<quizApp> {
               height: 30,
             ),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  btn4 = 3;
-                  if (allQuestions[queIndex]["ans"] == 0) {
-                    btn1 = 0;
-                  } else if (allQuestions[queIndex]["ans"] == 1) {
-                    btn2 = 1;
-                  } else if (allQuestions[queIndex]["ans"] == 2) {
-                    btn3 = 2;
-                  } else {
-                    score++;
-                  }
-                });
-              },
               style: ButtonStyle(
-                backgroundColor: (allQuestions[queIndex]["ans"] == btn4)
-                    ? MaterialStatePropertyAll(Colors.green)
-                    : (btn4 == 3)
-                        ? MaterialStatePropertyAll(Colors.red)
-                        : null,
+                backgroundColor: checkAns(3),
               ),
+              onPressed: () {
+                if (selectedIndex == -1) {
+                  setState(() {
+                    selectedIndex = 3;
+                  });
+                }
+              },
               child: Text(
-                "D. ${allQuestions[queIndex]["Option"][3]}",
-                style: TextStyle(
+                "A. ${allQuestions[queIndex]["Option"][3]}",
+                style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: Colors.black),
@@ -231,20 +208,22 @@ class _quizAppState extends State<quizApp> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            setState(() {
-              if (queIndex < allQuestions.length - 1) {
-                queIndex++;
-                btn1 = -1;
-                btn2 = -1;
-                btn3 = -1;
-                btn4 = -1;
-              } else {
+            if (queIndex <= allQuestions.length - 1 &&
+                selectedIndex != allQuestions.length - 1) {
+              setState(() {
+                if (selectedIndex != -1) {
+                  queIndex++;
+                }
+                selectedIndex = -1;
+              });
+            } else {
+              setState(() {
                 screen = false;
-              }
-            });
+              });
+            }
           },
           backgroundColor: Colors.blue,
-          child: Icon(
+          child: const Icon(
             Icons.forward,
             color: Colors.orange,
           ),
@@ -264,29 +243,75 @@ class _quizAppState extends State<quizApp> {
           centerTitle: true,
           backgroundColor: Colors.blue,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "${score} / ${allQuestions.length}",
-              style: TextStyle(
-                  fontSize: 60,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.yellow[800]),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Your Score",
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.w800),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 60,
+              ),
+              Image.network(
+                "https://cdn.stockmediaserver.com/smsimg31/pv/IsignstockContributors/IST_28503_25738.jpg?token=cMWRmOCe1Y-DVrG8MKV_XxuI2tT5ua1RfGYLw1GO_GA&class=pv&smss=52&expires=4102358400",
+                height: 250,
+                width: 350,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Congratulations!!!",
+                    style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.amber),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 130,
+                    height: 100,
+                    color: Colors.lime[50],
+                    child: Text(
+                      "${allQuestions.length - score} / ${allQuestions.length}",
+                      style: TextStyle(
+                          fontSize: 60,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.yellow[800]),
+                    ),
+                  ),
+                ],
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Your Score",
+                    style: TextStyle(fontSize: 50, fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+              SizedBox(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      screen = true;
+                      selectedIndex = -1;
+                      queIndex = 0;
+                      score = 0;
+                      answerSelected = false;
+                    });
+                  },
+                  child: const Text(
+                    "Reset",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
+                  ),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       );
     }
