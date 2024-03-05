@@ -18,3 +18,30 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/cardimg1.jpg
+    - assets/cardimg2.jpg
+    - assets/cardimg3.jpg
+    - assets/cardimg4.jpg
+    - assets/cardimg5.jpg
+    - assets/bgimg1.jpg
+    - assets/bgimg2.jpg
+    - assets/bgimg3.jpg
+    - assets/bgimg4.jpg
+    - assets/bgimg5.jpg
+    - assets/earth.png
+    - assets/plane.jpg
+    - assets/train.jpg
+    - assets/bus.jpg
+    - assets/cruise.jpg
+    - assets/car.jpg
+    - assets/hotel1.jpg
+    - assets/hotel2.png
+    - assets/hotel3.jpg
+    - assets/hotel4.jpg
+    - assets/hotel5.png
+    - assets/taxi1.jpg
+    - assets/taxi2.jpg
+    - assets/taxi3.jpg
+    - assets/taxi4.jpg
+    - assets/taxi5.jpg
