@@ -52,7 +52,7 @@ class MatchesPageState extends State<MatchesPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Flexible(
             child: ListView.builder(
               itemCount: userList.length,
               itemBuilder: (context, index) {
@@ -76,10 +76,12 @@ class MatchesPageState extends State<MatchesPage> {
                         child: Icon(Icons.person),
                       ),
                       const SizedBox(width: 16),
-                      Text(
-                        userList[index],
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          userList[index],
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Row(
