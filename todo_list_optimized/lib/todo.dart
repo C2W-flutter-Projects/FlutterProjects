@@ -292,9 +292,13 @@ class _todoState extends State<todo> {
         children: [
           Container(
             decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/image2.jpg"),
-                fit: BoxFit.cover,
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 96, 236, 255),
+                  Color.fromARGB(255, 0, 89, 161),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
           ),
@@ -391,7 +395,7 @@ class _todoState extends State<todo> {
                                   },
                                   child: const Icon(
                                     Icons.edit_outlined,
-                                    size: 14,
+                                    size: 16,
                                     color: Color.fromRGBO(0, 139, 148, 1),
                                   ),
                                 ),
@@ -406,7 +410,7 @@ class _todoState extends State<todo> {
                                   },
                                   child: const Icon(
                                     Icons.delete_outline,
-                                    size: 14,
+                                    size: 16,
                                     color: Color.fromRGBO(0, 139, 148, 1),
                                   ),
                                 ),

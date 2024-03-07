@@ -1,38 +1,32 @@
 // import 'package:dating_app/matches.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list_optimized/register.dart';
-import 'package:todo_list_optimized/todo.dart';
+import 'package:todo_list_optimized/login.dart';
+//import 'package:todo_list_optimized/todo.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
   @override
-  LoginPageState createState() => LoginPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  bool flag = true;
-  // Hardcoded username and password for validation
-  final String _username = 'avishkar';
-  final String _password = 'abcd1234';
+  final TextEditingController _repasswordController = TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      if (_usernameController.text == _username &&
-          _passwordController.text == _password) {
+      if (_passwordController.text == _repasswordController.text) {
         _showSuccessSnackbar();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            backgroundColor: Colors.red, // Change background color
-            behavior: SnackBarBehavior.floating, // Set behavior to floating
-
-            margin: EdgeInsets.only(
-                top: 70, left: 20, right: 20, bottom: 20), // Adjust margin
-            content: Text('Invalid Login Credentials',
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.only(top: 70, left: 20, right: 20, bottom: 20),
+            content: Text('Password Not Matching',
                 style: TextStyle(color: Colors.white)),
             duration: Duration(seconds: 2),
           ),
@@ -47,7 +41,7 @@ class LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(top: 70, left: 20, right: 20, bottom: 20),
-        content: Text('Logged in Successfully',
+        content: Text('Registration Successfull',
             style: TextStyle(color: Colors.white)),
         duration: Duration(seconds: 2),
       ),
@@ -56,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
     Future.delayed(const Duration(seconds: 1), () {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const todo()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }
@@ -66,7 +60,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 141, 207),
       body: Padding(
-        padding: const EdgeInsets.all(22.0),
+        padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -82,8 +76,8 @@ class LoginPageState extends State<LoginPage> {
                   children: [
                     Image.network(
                       "https://img.freepik.com/free-vector/privacy-policy-concept-illustration_114360-7853.jpg",
-                      width: 280,
-                      height: 280,
+                      width: 250,
+                      height: 230,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -94,7 +88,7 @@ class LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Login",
+                                "Register",
                                 style: TextStyle(
                                     fontSize: 60,
                                     fontWeight: FontWeight.w600,
@@ -103,7 +97,31 @@ class LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 20,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(35),
+                            ),
+                            child: TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                hintText: "Enter your Name",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(35.0),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter your Name';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           Container(
                             decoration: BoxDecoration(
@@ -113,15 +131,14 @@ class LoginPageState extends State<LoginPage> {
                             child: TextFormField(
                               controller: _usernameController,
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person),
-                                hintText: "Username",
+                                hintText: "create Username",
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(35.0),
                                 ),
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter your username';
+                                  return 'Please enter username';
                                 }
                                 return null;
                               },
@@ -135,39 +152,50 @@ class LoginPageState extends State<LoginPage> {
                             ),
                             child: TextFormField(
                               controller: _passwordController,
-                              obscureText: flag,
-                              obscuringCharacter: "•",
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.key),
-                                hintText: 'Password',
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        flag = !flag;
-                                      });
-                                    },
-                                    icon: const Icon(
-                                        Icons.remove_red_eye_outlined)),
+                                hintText: 'create Password',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(35.0),
                                 ),
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter your password';
+                                  return 'Please enter password';
                                 }
                                 return null;
                               },
                             ),
                           ),
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(35),
+                            ),
+                            child: TextFormField(
+                              controller: _repasswordController,
+                              decoration: InputDecoration(
+                                hintText: 'Retype Password',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(35.0),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter same password';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 15),
                           ElevatedButton(
                             style: const ButtonStyle(
                                 backgroundColor:
                                     MaterialStatePropertyAll(Colors.cyan)),
                             onPressed: _submitForm,
                             child: const Text(
-                              'Login',
+                              'Register',
                               style: TextStyle(
                                   fontSize: 19,
                                   fontWeight: FontWeight.w400,
@@ -175,21 +203,20 @@ class LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 40,
+                            height: 10,
                           ),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterPage()));
+                                      builder: (context) => const LoginPage()));
                             },
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "New Here? Click To Register",
+                                  "Already Registered? Click here to Login",
                                   style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w400,
