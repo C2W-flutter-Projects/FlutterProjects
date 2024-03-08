@@ -1,0 +1,30 @@
+name: edtech_app
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.2.6 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/menu.svg
+    - assets/image1.png
+    - assets/svg/img1.svg
+    - assets/svg/img2.svg
+    - assets/svg/icn1.svg
+    - assets/svg/icon1.svg
+    - assets/svg/icon2.svg
+    - assets/svg/icon3.svg
+    - assets/svg/icon4.svg
