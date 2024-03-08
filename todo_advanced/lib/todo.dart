@@ -1,7 +1,9 @@
+import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class Todo extends StatefulWidget {
@@ -89,8 +91,8 @@ class _TodoState extends State<Todo> {
     clearController();
   }
 
-  final _formKey = GlobalKey<FormState>();
-  void showBottomSheet(bool isedit, [TodoModelClass? obj]) {
+  final formKey = GlobalKey<FormState>();
+  void addOrEditTask(bool isedit, [TodoModelClass? obj]) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
@@ -252,10 +254,11 @@ class _TodoState extends State<Todo> {
                         ),
                         onPressed: () {
                           if (isedit) {
-                            Submit(true, obj);
+                            submit(true, obj);
                           } else {
-                            Submit(false);
+                            submit(false);
                           }
+
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -360,6 +363,9 @@ class _TodoState extends State<Todo> {
                                         height: 5,
                                       ),
                                       GestureDetector(
+                                        onTap: () {
+                                          editTask(data[index]);
+                                        },
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
                                           height: 40,
@@ -381,6 +387,9 @@ class _TodoState extends State<Todo> {
                                         height: 20,
                                       ),
                                       GestureDetector(
+                                        onTap: () {
+                                          removeTasks(data[index]);
+                                        },
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
                                           height: 40,
@@ -435,41 +444,42 @@ class _TodoState extends State<Todo> {
                                       child: const Icon(Icons.image),
                                     ),
                                   ),
-                                  const Flexible(
+                                  Flexible(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Lorem Ipsum is simply dummy industry.",
-                                          style: TextStyle(
+                                          data[index].title,
+                                          style: const TextStyle(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         Text(
-                                          "Simply dummy text of the printing and type setting industry. Lorem Ipsum Lorem Ipsum Lorem.",
-                                          style: TextStyle(
+                                          data[index].description,
+                                          style: const TextStyle(
                                               fontSize: 9,
                                               fontWeight: FontWeight.w400),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         Text(
-                                          "10 July 2023",
-                                          style: TextStyle(
+                                          data[index].date,
+                                          style: const TextStyle(
                                               fontSize: 8,
                                               fontWeight: FontWeight.w400),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
+                                  // const SizedBox(
+                                  //   width: 10,
+                                  // ),
+                                  const Spacer(),
                                   Checkbox(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -498,8 +508,8 @@ class _TodoState extends State<Todo> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(89, 57, 241, 1),
-        onPressed: () async {
-          await addOrEditTask(false);
+        onPressed: () {
+          addOrEditTask(false);
         },
         child: const Icon(
           size: 50,
