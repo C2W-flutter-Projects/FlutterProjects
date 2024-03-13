@@ -86,38 +86,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Column(
-                      children: [
-                        Image.asset("assets/images/place1.jpg"),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Resort in Goa",
-                                style: GoogleFonts.manrope(
-                                    fontSize: 14, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
         ],
       ),
     );

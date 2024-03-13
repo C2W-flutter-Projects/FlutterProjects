@@ -1,10 +1,11 @@
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
+
+dynamic database;
 
 class Todo extends StatefulWidget {
   const Todo({super.key});
@@ -14,18 +15,111 @@ class Todo extends StatefulWidget {
 }
 
 class TodoModelClass {
+  int? taskId;
   String title;
   String description;
   String date;
+  bool isCheckBoxChecked;
 
   TodoModelClass(
-      {required this.title, required this.description, required this.date});
+      {required this.taskId,
+      required this.title,
+      required this.description,
+      required this.date,
+      this.isCheckBoxChecked = false});
+
+  Map<String, dynamic> taskinfo() {
+    return {
+      'title': title,
+      'description': description,
+      'date': date,
+      'ischeckBoxChecked': isCheckBoxChecked ? 1 : 0,
+    };
+  }
+
+  @override
+  String toString() {
+    return '''{taskID : $taskId , title: $title, description : $description, date : $date, isCheckBoxChecked : $isCheckBoxChecked
+    }''';
+  }
+}
+
+Future<void> insertTaskData(TodoModelClass task) async {
+  final localDB = await database;
+  await localDB.insert(
+    'TodoModelClass',
+    task.taskinfo(),
+    ConflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future<void> updateTaskData(TodoModelClass obj) async {
+  final localDB = await database;
+  await localDB.update('TodoModelClass', obj.taskinfo(),
+      where: 'taskId = ?', whereArgs: [obj.taskId]);
+}
+
+Future<List<TodoModelClass>> getTaskData() async {
+  final localDB = await database;
+  List<Map<String, dynamic>> mapEntries = await localDB.query("TodoModelClass");
+  return List.generate(mapEntries.length, (i) {
+    return TodoModelClass(
+        taskId: mapEntries[i]['taskID'],
+        title: mapEntries[i]['title'],
+        description: mapEntries[i]['description'],
+        date: mapEntries[i]['date']);
+  });
 }
 
 class _TodoState extends State<Todo> {
-  bool isCheckBoxChecked = false;
-
+  late Database database;
   List<TodoModelClass> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initDB();
+  }
+
+  Future<void> initDB() async {
+    database = await openDatabase(
+      p.join(await getDatabasesPath(), "todoDB4.db"),
+      onCreate: (db, version) async {
+        await db.execute('''CREATE TABLE TodoModelClass(
+taskId INTEGER PRIMARY KEY AUTOINCREMENT,
+title TEXT,
+description TEXT,
+date TEXT,
+isCheckBoxChecked INTEGER
+)''');
+      },
+      version: 1,
+    );
+    data.addAll(await getTaskData());
+    setState(() {});
+    print(data);
+  }
+
+  void editTask(BuildContext context, TodoModelClass obj) {
+    titleController.text = obj.title;
+    descController.text = obj.description;
+    dateController.text = obj.date;
+
+    addOrEditTask(true, obj);
+  }
+
+  void removeTasks(TodoModelClass obj) async {
+    setState(() {
+      data.remove(obj);
+    });
+
+    final localDB = database;
+    await localDB.delete(
+      'TodoModelClass',
+      where: "taskId = ?",
+      whereArgs: [obj.taskId],
+    );
+  }
 
   List<Color>? colorList = const [
     Color.fromRGBO(250, 232, 232, 1),
@@ -35,24 +129,6 @@ class _TodoState extends State<Todo> {
     Color.fromRGBO(250, 232, 232, 1),
   ];
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-
-  void editTask(TodoModelClass obj) {
-    titleController.text = obj.title;
-    descController.text = obj.description;
-    dateController.text = obj.date;
-
-    addOrEditTask(true, obj);
-  }
-
-  void removeTasks(TodoModelClass obj) {
-    setState(() {
-      data.remove(obj);
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -61,30 +137,34 @@ class _TodoState extends State<Todo> {
     descController.dispose();
   }
 
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+
   void clearController() {
     titleController.clear();
     descController.clear();
     dateController.clear();
   }
 
-  void submit(bool isedit, [TodoModelClass? obj]) {
+  void submit(bool isedit, [TodoModelClass? obj]) async {
     if (titleController.text.trim().isNotEmpty &&
         descController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty) {
+      final newTask = TodoModelClass(
+          taskId: isedit ? obj!.taskId : data.length + 1,
+          title: titleController.text.trim(),
+          description: descController.text.trim(),
+          date: dateController.text.trim());
       if (!isedit) {
         setState(() {
-          data.add(
-            TodoModelClass(
-                title: titleController.text.trim(),
-                description: descController.text.trim(),
-                date: dateController.text.trim()),
-          );
+          data.add(newTask);
+          insertTaskData(newTask);
         });
       } else {
         setState(() {
-          obj!.title = titleController.text.trim();
-          obj.description = descController.text.trim();
-          obj.date = dateController.text.trim();
+          final index = data.indexOf(obj!);
+          data[index] = newTask;
         });
       }
     }
@@ -288,23 +368,26 @@ class _TodoState extends State<Todo> {
       backgroundColor: const Color.fromRGBO(111, 81, 255, 1),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 45, left: 30, right: 183),
+          Padding(
+            padding: const EdgeInsets.only(top: 45, left: 30, right: 183),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(
+                  height: 40,
+                ),
                 Text(
                   "Good Morning",
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w400,
+                  style: GoogleFonts.quicksand(
+                      fontSize: 27,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white),
                 ),
                 Text(
                   "Avishkar",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600,
+                  style: GoogleFonts.quicksand(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w700,
                       color: Colors.white),
                 ),
               ],
@@ -323,12 +406,12 @@ class _TodoState extends State<Todo> {
               ),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
                     child: Text(
                       "CREATE TO DO LIST",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                      style: GoogleFonts.quicksand(
+                          fontSize: 12, fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(
@@ -349,7 +432,7 @@ class _TodoState extends State<Todo> {
                         itemBuilder: (context, index) {
                           return Slidable(
                             closeOnScroll: true,
-                            key: const ValueKey(0),
+                            key: UniqueKey(),
                             endActionPane: ActionPane(
                               extentRatio: 0.2,
                               motion: const DrawerMotion(),
@@ -364,7 +447,7 @@ class _TodoState extends State<Todo> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          editTask(data[index]);
+                                          editTask(context, data[index]);
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
@@ -419,6 +502,8 @@ class _TodoState extends State<Todo> {
                             child: Container(
                               decoration: const BoxDecoration(
                                 color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey,
@@ -430,6 +515,8 @@ class _TodoState extends State<Todo> {
                               margin: const EdgeInsets.only(
                                   top: 10, bottom: 10, left: 10, right: 10),
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(10),
@@ -452,17 +539,24 @@ class _TodoState extends State<Todo> {
                                         Text(
                                           data[index].title,
                                           style: const TextStyle(
-                                              fontSize: 11,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w500),
                                         ),
                                         const SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          data[index].description,
-                                          style: const TextStyle(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.w400),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                data[index].description,
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(
                                           height: 10,
@@ -470,27 +564,36 @@ class _TodoState extends State<Todo> {
                                         Text(
                                           data[index].date,
                                           style: const TextStyle(
-                                              fontSize: 8,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.w400),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  // const SizedBox(
-                                  //   width: 10,
-                                  // ),
-                                  const Spacer(),
-                                  Checkbox(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    activeColor: Colors.green,
-                                    value: isCheckBoxChecked,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        isCheckBoxChecked = !isCheckBoxChecked;
-                                      });
-                                    },
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Checkbox(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            activeColor: Colors.green,
+                                            value:
+                                                data[index].isCheckBoxChecked,
+                                            onChanged: (val) {
+                                              setState(() {
+                                                data[index].isCheckBoxChecked =
+                                                    val != null && val;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -512,7 +615,6 @@ class _TodoState extends State<Todo> {
           addOrEditTask(false);
         },
         child: const Icon(
-          size: 50,
           Icons.add,
           color: Colors.white,
         ),

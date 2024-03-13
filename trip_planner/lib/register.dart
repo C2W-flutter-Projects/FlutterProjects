@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trip_planner/Starting_Page.dart';
+// import 'package:trip_planner/Starting_Page.dart';
 import 'package:trip_planner/login.dart';
 
 class register extends StatefulWidget {
@@ -10,7 +10,7 @@ class register extends StatefulWidget {
 }
 
 class _registerState extends State<register> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController usrnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController retyprpasswordController = TextEditingController();
 
@@ -32,7 +32,7 @@ class _registerState extends State<register> {
           ),
           Center(
             child: Container(
-              height: 500,
+              height: 600,
               width: 350,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -57,7 +57,7 @@ class _registerState extends State<register> {
                     children: [
                       Container(
                         padding: EdgeInsets.all(20),
-                        width: 205,
+                        width: 175,
                         height: 100,
                         child: const Text(
                           "Register",
@@ -73,10 +73,9 @@ class _registerState extends State<register> {
                   Container(
                     width: 300,
                     child: TextField(
-                      controller: nameController,
-                      focusNode: primaryFocus,
+                      controller: usrnameController,
                       decoration: InputDecoration(
-                        hintText: "Enter Name",
+                        hintText: "Enter Username",
                         focusColor: Colors.blue,
                         hoverColor: Colors.white,
                         border: OutlineInputBorder(
@@ -93,7 +92,6 @@ class _registerState extends State<register> {
                     width: 300,
                     child: TextField(
                       controller: passwordController,
-                      focusNode: primaryFocus,
                       decoration: InputDecoration(
                         hintText: "Enter Password",
                         border: OutlineInputBorder(
@@ -104,13 +102,12 @@ class _registerState extends State<register> {
                     ),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 40,
                   ),
                   Container(
                     width: 300,
                     child: TextField(
-                      controller: passwordController,
-                      focusNode: primaryFocus,
+                      controller: retyprpasswordController,
                       decoration: InputDecoration(
                         hintText: "Retype Password",
                         border: OutlineInputBorder(
@@ -126,10 +123,8 @@ class _registerState extends State<register> {
                   GestureDetector(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => StartingPage()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => login()));
                       },
                       child: const Text("Register"),
                     ),
@@ -142,20 +137,19 @@ class _registerState extends State<register> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (Context) => login(),
+                          builder: (Context) => register(),
                         ),
                       );
                     },
                     child: Container(
                         height: 20,
-                        width: 270,
+                        width: 250,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
-                          child:
-                              Text("Already Registered? click here to Login"),
+                          child: Text("Already Registered? Go to login Page"),
                         )),
                   ),
                 ],
