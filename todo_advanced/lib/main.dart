@@ -1,13 +1,10 @@
-// import 'dart:html';
-
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
+import 'package:todo_advanced/register.dart';
 
 List<TodoModelClass> data = [];
 void main() async {
@@ -26,8 +23,8 @@ void main() async {
     version: 1,
   );
   data.addAll(await getTaskData());
-  print(data);
-  print("from get data ${await getTaskData()}");
+  // print(data);
+  // print("from get data ${await getTaskData()}");
   runApp(const MainApp());
 }
 
@@ -37,7 +34,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Todo(),
+      home: RegisterPage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -93,7 +90,7 @@ Future<void> insertTaskData(TodoModelClass task) async {
 }
 
 Future<void> removeTasks(TodoModelClass obj) async {
-  print("Inside the removeTask Method");
+  // print("Inside the removeTask Method");
   final localDB = await database;
   await localDB.delete(
     'TodoModelClass',
@@ -116,9 +113,9 @@ Future<List<TodoModelClass>> getTaskData() async {
   final localDB = await database;
   List<Map<String, dynamic>> mapEntries = await localDB.query("TodoModelClass");
 
-  print("------Inside Entries-----");
-  print(mapEntries);
-  print("------Inside Entries-----");
+  // print("------Inside Entries-----");
+  // print(mapEntries);
+  // print("------Inside Entries-----");
 
   return List.generate(mapEntries.length, (i) {
     return TodoModelClass(

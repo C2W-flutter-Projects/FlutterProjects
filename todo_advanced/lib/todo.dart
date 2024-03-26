@@ -421,7 +421,8 @@ isCheckBoxChecked INTEGER
                     child: Container(
                       padding: const EdgeInsets.only(top: 17),
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        gradient: LinearGradient(
+                            colors: [Colors.deepPurple, Colors.purple]),
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(40),
                             topRight: Radius.circular(40)),
