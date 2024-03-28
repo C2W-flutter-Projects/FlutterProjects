@@ -1,7 +1,9 @@
 // import 'package:dating_app/matches.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_advanced/databases.dart';
 import 'package:todo_advanced/main.dart';
 import 'package:todo_advanced/register.dart';
+import 'requiredClasses.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,14 +17,28 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool flag = true;
-  // Hardcoded username and password for validation
-  final String _username = 'avishkar';
-  final String _password = 'abcd1234';
+  dynamic database;
 
-  void _submitForm() {
+  List<SingleChildUserInfo> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    database = createDB();
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_usernameController.text == _username &&
-          _passwordController.text == _password) {
+      data = await fetchUserData();
+
+      for (int i = 0; i < data.length; i++) {
+        if (data[i].userName == _usernameController.text.trim() &&
+            data[i].password == _passwordController.text) {
+          flag = true;
+        }
+      }
+      // print(data);
+      if (flag) {
         _showSuccessSnackbar();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,11 +87,6 @@ class LoginPageState extends State<LoginPage> {
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(5),
-                // decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   border: Border.all(color: Colors.blue, width: 5),
-                //   borderRadius: BorderRadius.circular(20),
-                // ),
                 child: Column(
                   children: [
                     Image.network(

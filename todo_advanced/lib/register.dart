@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todo_advanced/login.dart';
 
+import 'databases.dart';
+import 'requiredClasses.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
   @override
@@ -14,14 +17,27 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
-  void _submitForm() {
+  @override
+  void initState() {
+    super.initState();
+    database = createDB();
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text == _repasswordController.text) {
+        SingleChildUserInfo obj = SingleChildUserInfo(
+            name: _nameController.text,
+            userName: _usernameController.text,
+            password: _passwordController.text);
+
+        await insertUserData(obj);
+        print(await fetchUserData());
         _showSuccessSnackbar();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             margin: EdgeInsets.only(top: 70, left: 20, right: 20, bottom: 20),
             content: Text('Password Not Matching',
