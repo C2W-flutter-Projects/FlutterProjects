@@ -9,6 +9,7 @@ class AssignmentA extends StatelessWidget {
       appBar: AppBar(
         leading: const Icon(Icons.arrow_back),
         title: const Text("Appbar Assignment"),
+        
         centerTitle: true,
         actions: const [
           Icon(Icons.favorite_outline),

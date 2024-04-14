@@ -8,7 +8,7 @@ dynamic database;
 //create table
 Future<dynamic> createDB() async {
   return openDatabase(
-    p.join(await getDatabasesPath(), "UserData.db"),
+    p.join(await getDatabasesPath(), "UserData3.db"),
     version: 1,
     onCreate: (db, version) {
       db.execute('''
@@ -19,6 +19,13 @@ Future<dynamic> createDB() async {
           password TEXT
         )
       ''');
+      db.execute('''CREATE TABLE Tasks(
+        taskId INTEGER PRIMARY KEY ,
+        title TEXT,
+        description TEXT,
+        date TEXT,
+        isCheckBoxChecked INTEGER
+      )''');
     },
   );
 }

@@ -1,0 +1,44 @@
+name: plants_app_ui
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/plant.png
+    - assets/plant1.jpg
+    - assets/design.svg
+    - assets/phone.svg
+    - assets/rightImage.svg
+    - assets/design2.svg
+    - assets/cart.svg
+    - assets/poster.svg
+    - assets/posterplant.png
+    - assets/dots.svg
+    - assets/item.svg
+    - assets/plant3.svg
+    - assets/item.jpg
+    - assets/small.jpg
+    - assets/big.jpg
+    - assets/big.svg
+    - assets/final.jpg
+    - assets/height.svg
+    - assets/temp.svg
+    - assets/pot.svg
+    - assets/shopping-bag.svg
+    - assets/plant2.png
